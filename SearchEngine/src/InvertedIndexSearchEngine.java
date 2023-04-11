@@ -3,20 +3,22 @@ import java.util.*;
 public class InvertedIndexSearchEngine implements SearchEngine{
     LanguageModel languageModel;
 
-    // Here we store the original documents and their id is the indices they get assigned
-    ArrayList<String> rawDocuments;
+    // Here we store the original documents using their ids as keys
+    HashMap<Integer, Document> documents;
 
     // Contains the words and the documents they occur in
     HashMap<String,SortedSet<DocumentImportance>> invertedIndexDB;
 
-    public InvertedIndexSearchEngine(List<String> documents, LanguageModel languageModel){
+    public InvertedIndexSearchEngine(List<String> rawDocuments, LanguageModel languageModel){
 
         // Create the models and storage
         this.languageModel = languageModel;
-        rawDocuments = new ArrayList<String>();
-        invertedIndexDB = new HashMap<String,SortedSet<DocumentImportance>>();
 
-        store(documents);
+        // The documents are stored in a set ordered by document-id
+        this.documents = new HashMap<Integer, Document>();
+        this.invertedIndexDB = new HashMap<String,SortedSet<DocumentImportance>>();
+
+        store(rawDocuments);
     }
 
     /* Generates the inverted index database from the raw string documents, using the provided language model.*/
@@ -30,7 +32,8 @@ public class InvertedIndexSearchEngine implements SearchEngine{
 
                 if(document.containsKey(word)) {
                     Double importance = document.get(word);
-                    DocumentImportance docimp = new DocumentImportance(doc_index, importance);
+                    Document doc = this.documents.get(doc_index);
+                    DocumentImportance docimp = new DocumentImportance(doc, importance);
 
                     if(this.invertedIndexDB.containsKey(word)){
                        SortedSet<DocumentImportance> docsAndImportances = this.invertedIndexDB.get(word);
@@ -48,15 +51,15 @@ public class InvertedIndexSearchEngine implements SearchEngine{
     }
 
     @Override
-    public List<String> searchFor(String term) {
+    public List<Document> searchFor(String term) {
         if(invertedIndexDB.containsKey(term)){
-            ArrayList<String> rawDocumentsToReturn = new ArrayList<>();
+            ArrayList<Document> documentsToReturn = new ArrayList<>();
             SortedSet<DocumentImportance> docsContainingTerm = invertedIndexDB.get(term);
 
             Iterator<DocumentImportance> it = docsContainingTerm.iterator();
-            it.forEachRemaining(document -> rawDocumentsToReturn.add(rawDocuments.get(document.documentIndex)));
+            it.forEachRemaining(documentImportance -> documentsToReturn.add(documentImportance.document));
 
-            return rawDocumentsToReturn;
+            return documentsToReturn;
         }
         else{
             throw new IllegalArgumentException("Sorry, the term you searched for is not present in any document");
@@ -64,9 +67,15 @@ public class InvertedIndexSearchEngine implements SearchEngine{
     }
 
     @Override
-    public void store(List<String> documents) {
-        this.rawDocuments.addAll(documents);
-        generateDataBaseFrom(documents);
+    public void store(List<String> rawDocuments) {
+        for(int doc_index = 0; doc_index < rawDocuments.size(); doc_index++){
+
+            // Create and store a new document using the document index and raw text
+            Document document = new Document(rawDocuments.get(doc_index), doc_index);
+            this.documents.put(document.getDocumentIndex(), document);
+        }
+
+        generateDataBaseFrom(rawDocuments);
     }
 
 

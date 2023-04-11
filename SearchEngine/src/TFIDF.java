@@ -77,7 +77,7 @@ public class TFIDF implements LanguageModel {
         document = document.replaceAll("[\\.\\?,]", " ");
 
         // Remove all whitespace in beg and end to not get empty tokens in the first and last tokens
-        document = document.strip();
+       // document = document.strip();
 
         return document.split("\\s+");
     }

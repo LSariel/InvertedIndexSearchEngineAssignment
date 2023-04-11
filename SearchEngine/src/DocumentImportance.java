@@ -1,9 +1,9 @@
 class DocumentImportance implements Comparable<DocumentImportance> {
-    public Integer documentIndex;
+    public Document document;
     public Double importance;
 
-    public DocumentImportance(Integer documentIndex, Double importance){
-        this.documentIndex = documentIndex;
+    public DocumentImportance(Document document, Double importance){
+        this.document = document;
         this.importance = importance;
     }
 

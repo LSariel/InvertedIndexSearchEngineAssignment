@@ -1,4 +1,4 @@
-public class Document {
+public class Document implements Comparable<Document>{
     String text;
     Integer documentIndex;
 
@@ -13,5 +13,10 @@ public class Document {
 
     public Integer getDocumentIndex() {
         return documentIndex;
+    }
+
+    @Override
+    public int compareTo(Document otherDocument) {
+        return this.documentIndex.compareTo(otherDocument.documentIndex);
     }
 }
