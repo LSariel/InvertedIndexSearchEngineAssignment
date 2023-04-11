@@ -23,11 +23,11 @@ public class SimpleTextUserInterface implements UserInterface{
     }
 
     @Override
-    public void presentSearchResults(List<String> searchResults) {
+    public void presentSearchResults(List<Document> searchResults) {
         System.out.println("These are the documents that match your search term. Presented" +
                 " in decending order of importance.");
-        for (String doc : searchResults){
-            System.out.println(doc);
+        for (Document doc : searchResults){
+            System.out.println(doc.text);
         }
     }
 

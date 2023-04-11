@@ -24,7 +24,7 @@ public class Main {
             String searchTerm = ui.getUserQuery();
 
             try {
-                List<String> result = searchEngine.searchFor(searchTerm);
+                List<Document> result = searchEngine.searchFor(searchTerm);
                 ui.presentSearchResults(result);
             }
 

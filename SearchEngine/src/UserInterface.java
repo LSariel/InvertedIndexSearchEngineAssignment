@@ -3,6 +3,6 @@ public interface UserInterface {
     String getUserQuery();
     boolean userWantsToQuitProgram();
 
-    void presentSearchResults(List<String> searchResults);
+    void presentSearchResults(List<Document> searchResults);
 
 }

@@ -33,7 +33,7 @@ public class InvertedIndexSearchEngine implements SearchEngine{
                 if(document.containsKey(word)) {
                     Double importance = document.get(word);
                     Document doc = this.documents.get(doc_index);
-                    DocumentImportance docimp = new DocumentImportance(doc_index, importance);
+                    DocumentImportance docimp = new DocumentImportance(doc, importance);
 
                     if(this.invertedIndexDB.containsKey(word)){
                        SortedSet<DocumentImportance> docsAndImportances = this.invertedIndexDB.get(word);
@@ -51,15 +51,15 @@ public class InvertedIndexSearchEngine implements SearchEngine{
     }
 
     @Override
-    public List<String> searchFor(String term) {
+    public List<Document> searchFor(String term) {
         if(invertedIndexDB.containsKey(term)){
-            ArrayList<String> rawDocumentsToReturn = new ArrayList<>();
+            ArrayList<Document> documentsToReturn = new ArrayList<>();
             SortedSet<DocumentImportance> docsContainingTerm = invertedIndexDB.get(term);
 
             Iterator<DocumentImportance> it = docsContainingTerm.iterator();
-            it.forEachRemaining(document -> rawDocumentsToReturn.add(rawDocuments.get(document.documentIndex)));
+            it.forEachRemaining(documentImportance -> documentsToReturn.add(documentImportance.document));
 
-            return rawDocumentsToReturn;
+            return documentsToReturn;
         }
         else{
             throw new IllegalArgumentException("Sorry, the term you searched for is not present in any document");
